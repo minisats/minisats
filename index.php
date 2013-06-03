@@ -98,7 +98,7 @@ $(document).ready(function() {
       alert("No amount specified");
       return;
     }
-    var command = "tip," + to_address + "," + unformat_balance(amount,denomination).toString() + "," + memo;
+    var command = "tip," + to_address + "," + unformat_balance(amount,denomination).toString() + "," + encodeURIComponent(memo);
     $('#command_input').val(encodeURIComponent(command));
   });
   $('#generate_withdraw_button').click(function() {

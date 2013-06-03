@@ -46,7 +46,7 @@ if ($command[0]=="tip") {
   $query = "INSERT INTO `tips` (from_id_address, to_id_address, amount, memo) VALUES (\"".mysql_real_escape_string($id_address)."\",
                                                                                       \"".mysql_real_escape_string($to_address)."\",
                                                                                       ".$nsats.",
-                                                                                      \"".mysql_real_escape_string($memo)."\")";
+                                                                                      \"".mysql_real_escape_string(urldecode($memo))."\")";
   mysql_query($query)or die("e".$query." --- ".mysql_error());
   echo "s".mysql_insert_id();
 }
