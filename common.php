@@ -1,7 +1,12 @@
 <?php
 include("secret_values.php");//$database_username, $rpcuser, etc.
 
-$link=mysql_connect("localhost",$database_username,$database_pass)or trigger_error(mysql_error());
+if ($select_user) {
+  $link=mysql_connect("localhost",$database_select_username,$database_select_pass)or trigger_error(mysql_error());
+}
+else {
+  $link=mysql_connect("localhost",$database_username,$database_pass)or trigger_error(mysql_error());
+}
 mysql_select_db($database_name)or die(msyql_error());
 
 try {

@@ -1,10 +1,11 @@
 <?php
+$select_user=true;
 include("common.php");
 if (!isset($_REQUEST['clause'])) {
   die ("eClause not defined");
 }
 $clause = $_REQUEST['clause'];
-$clause = explode(",",$clause)[0];
+$clause = explode(";",$clause)[0];
 $query = "SELECT * FROM `tips` WHERE ".$clause;
 $result = mysql_query($query)or die("emysql_error: ".mysql_error());
 
