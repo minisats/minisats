@@ -12,6 +12,7 @@ $to_replace = Array("%",",",";");
 $replacements = Array("%25","%2C","%3B");
 
 $first = true;
+echo "s";
 while ($assoc = mysql_fetch_assoc($result)) {
   if (!$first) echo ";";
   else $first=false;
