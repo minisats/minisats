@@ -37,9 +37,32 @@ function verify_message($bitcoin,$address,$signed,$message) {
 }
 
 function add_funds($id_address,$nsats) {
-  $query = "UPDATE `accounts` SET balance = balance + ".$nsats." WHERE (id_address = '".$id_address."' AND balance <= 18446744073709551615 - ".$nsats.") LIMIT 1";//18446744073709551615 is the max value of unsigned BIGINT type in the sql table
+  $query = "UPDATE `accounts` SET balance = balance + ".$nsats." WHERE (id_address = '".$id_address."' AND balance <= 18446744073709551615 - ".$nsats.") LIMIT 1";//18446744073709551615 is the max value of the unsigned BIGINT type for sql
   mysql_query($query)or die("eadd_funds: ".mysql_error());
-  return (mysql_affected_rows()==1);
+  if (mysql_affected_rows()==1) {
+    return true;
+  }
+  
+  $query = "SELECT balance FROM `accounts` WHERE (id_address = '".$id_address."')";
+  if (!($result = mysql_query($query)or die(mysql_error()))) {
+    die("eNo address found when trying to add funds");
+  }
+  
+  $row = mysql_fetch_row($result);
+  $balance = $row[0];
+  $total = bcadd($nsats,$balance);
+  $over = bcsub($total,18000000000000000000);//setting to 18BTC even; this way we guarantee at least a 0.44 return to the bitcoin address every time, and avoid the problem of many small received tips resulting in many small bitcoin transactions
+  $query = "UPDATE `accounts` SET balance = 18000000000000000000 WHERE id_address = '".$id_address."' LIMIT 1";
+  mysql_query($query)or die("e".mysql_error());
+  
+  if (mysql_affected_rows()==1) {
+    $after_tx_fee = bcsub($over,$tx_fee_nsats);
+    if ($after_tx_fee > 0) {
+      $bitcoin->sendtoaddress($id_address,nsats_to_btc($after_tx_fee));
+      return true;
+    }
+  }
+  return false;
 }
 function deduct_funds($id_address,$nsats) {
   $query = "UPDATE `accounts` SET balance = balance - ".$nsats." WHERE (id_address = '".$id_address."' AND balance >= ".$nsats.") LIMIT 1";

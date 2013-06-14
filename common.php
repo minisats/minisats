@@ -1,7 +1,7 @@
 <?php
 include("secret_values.php");//$database_username, $rpcuser, etc.
 
-if ($select_user) {
+if ($use_select_user) {
   $link=mysql_connect("localhost",$database_select_username,$database_select_pass)or trigger_error(mysql_error());
 }
 else {
@@ -24,7 +24,9 @@ catch (Exception $e) {
 include("common_functions.php");
 
 //constants
-$tip_fee = 1;//fee in nsats to send a tip. 1 is just a placeholder for now, and will change to roughly pay back server processing costs
+$tip_fee = satoshis_to_nsats(0.01);//fee in nsats to send a tip. 1 is just a placeholder for now, and will change to roughly pay back server processing costs
+$data_fee = satoshis_to_nsats(0.02);
+$withdraw_fee = satoshis_to_nsats(0.001);
 $deposit_min_conf = 0;//will be changed to a higher number before production release
 $tx_fee_nsats = btc_to_nsats(0.0005);
 ?>
