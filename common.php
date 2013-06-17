@@ -17,7 +17,7 @@ try {
   //before long it might be best to switch to another bitcoin transaction handler--bitcoind seems pretty clumsy in some ways
 }
 catch (Exception $e) {
-  echo $e->getMessage();
+  echo "can't connect to bitcoind.";
   die();
 }
 
